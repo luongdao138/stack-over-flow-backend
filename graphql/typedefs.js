@@ -127,5 +127,6 @@ module.exports = gql`
   type Mutation {
     register(username: String!, password: String!): LoggedUser
     login(username: String!, password: String!): LoggedUser
+    postQuestion(title: String!, body: String!, tags: [String!]!): Question
   }
 `;

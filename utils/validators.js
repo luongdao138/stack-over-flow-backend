@@ -27,4 +27,30 @@ const loginValidator = (username, password) => {
   };
 };
 
-module.exports = { registerValidator, loginValidator };
+const questionValidator = (title, body, tags) => {
+  let errors = {};
+
+  if (title.trim() === '') errors.title = 'Title must be provided!';
+
+  if (body.trim() === '') errors.body = 'Body must be provided!';
+
+  if (!Array.isArray(tags) || tags.length === 0 || tags.length > 5)
+    errors.tags = '1-5 tags must be added!';
+  else if (tags.some((tag) => !/^[a-zA-Z0-9-]*$/.test(tag)))
+    errors.tags = 'Tags must have alphanumeric characters only!';
+  else if (
+    tags.some(
+      (tag, index) => tags.filter((x, i) => x === tag && i !== index).length > 0
+    )
+  )
+    errors.tags = 'Duplicate tags cannot be added!';
+  else if (tags.some((tag) => tag.length > 20))
+    errors.tags = 'A single tag cannot have more than 20 characters!';
+
+  return {
+    errors,
+    isValid: Object.keys(errors).length === 0,
+  };
+};
+
+module.exports = { registerValidator, loginValidator, questionValidator };
