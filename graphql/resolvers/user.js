@@ -1,5 +1,5 @@
 const User = require('../../models/User');
-const { registerValidator } = require('../../utils/validators');
+const { registerValidator, loginValidator } = require('../../utils/validators');
 const bcrypt = require('bcryptjs');
 const jwt = require('jsonwebtoken');
 const { UserInputError } = require('apollo-server');
@@ -7,7 +7,7 @@ const { UserInputError } = require('apollo-server');
 module.exports = {
   Mutation: {
     register: async (_, { username, password }) => {
-      // check if the register input is validate
+      // check if the register input is valid
       const { errors, isValid } = registerValidator(username, password);
       if (!isValid)
         throw new UserInputError('User input error', {
@@ -40,6 +40,36 @@ module.exports = {
         id: savedUser._id,
         token,
         role: savedUser.role,
+      };
+    },
+    login: async (_, { username, password }) => {
+      // check if the login input is valid
+      const { errors, isValid } = loginValidator(username, password);
+      if (!isValid) throw new UserInputError('User input error', { errors });
+
+      // check if the username exists or not
+      const existingUser = await User.findOne({ username });
+      if (!existingUser)
+        throw new UserInputError(`Username ${username} does not exists!`);
+
+      // check the password
+      const isPwValid = await bcrypt.compare(password, existingUser.password);
+      if (!isPwValid) throw new UserInputError('Password is not correct!');
+
+      // generate access token
+      const token = jwt.sign(
+        { id: existingUser._id },
+        process.env.ACCESS_TOKEN,
+        {
+          expiresIn: '1h',
+        }
+      );
+
+      return {
+        username,
+        id: existingUser._id,
+        token,
+        role: existingUser.role,
       };
     },
   },

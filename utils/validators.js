@@ -1,5 +1,5 @@
 const registerValidator = (username, password) => {
-  const errors = {};
+  let errors = {};
 
   if (username.trim() === '') errors.username = 'Username is cannot be empty!';
   else if (username.trim().length > 30 || username.trim().length < 3)
@@ -15,4 +15,16 @@ const registerValidator = (username, password) => {
   };
 };
 
-module.exports = { registerValidator };
+const loginValidator = (username, password) => {
+  let errors = {};
+
+  if (username.trim() === '') errors.username = 'Username cannot be empty!';
+  if (password.trim() === '') errors.password = 'Password cannot be empty!';
+
+  return {
+    errors,
+    isValid: Object.keys(errors).length === 0,
+  };
+};
+
+module.exports = { registerValidator, loginValidator };
