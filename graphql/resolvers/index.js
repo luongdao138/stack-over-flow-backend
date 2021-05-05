@@ -1,4 +1,5 @@
 const userResolvers = require('./user');
+const questionResolvers = require('./question');
 
 module.exports = {
   Query: {
@@ -6,6 +7,7 @@ module.exports = {
   },
   Mutation: {
     ...userResolvers.Mutation,
+    ...questionResolvers.Mutation,
   },
   User: {
     reputation: (parent) => {
