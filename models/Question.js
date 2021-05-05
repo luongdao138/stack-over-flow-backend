@@ -22,6 +22,7 @@ const questionModel = new Schema({
   tags: [{ type: String, required: true, trim: true }],
   comments: [commentSchema],
   answers: [answerSchema],
+  points: { type: Number, default: 0 },
   upvotedBy: [{ type: Schema.Types.ObjectId, ref: 'User' }],
   downVotedBy: [{ type: Schema.Types.ObjectId, ref: 'User' }],
   views: { type: Number, default: 0 },

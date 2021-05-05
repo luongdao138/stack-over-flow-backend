@@ -42,6 +42,9 @@ module.exports = {
         recentQuestions,
       };
     },
+    getAllUsers: async () => {
+      return await User.find({}, 'id username createdAt');
+    },
   },
   Mutation: {
     register: async (_, { username, password }) => {

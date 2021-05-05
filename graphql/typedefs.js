@@ -32,6 +32,12 @@ module.exports = gql`
     totalAnswers: Int
   }
 
+  type UserList {
+    id: ID!
+    username: String!
+    createdAt: DateTime!
+  }
+
   type QuestionRep {
     quesId: ID!
     rep: Int!
@@ -49,8 +55,64 @@ module.exports = gql`
     points: Int!
   }
 
+  type Author {
+    id: ID!
+    username: String!
+  }
+
+  type Comment {
+    id: ID!
+    body: String!
+    createdAt: DateTime!
+    updatedAt: DateTime
+  }
+
+  type Question {
+    id: ID!
+    title: String!
+    body: String!
+    author: Author
+    points: Int!
+    views: Int!
+    tags: [String!]!
+    acceptedAnswer: ID!
+    comments: [Comment]
+    answers: [Answer]
+    upvotedBy: [ID]
+    downVotedBy: [ID]
+    createdAt: DateTime!
+    updatedAt: DateTime
+  }
+
+  type Answer {
+    id: ID!
+    author: Author
+    body: String!
+    points: Int!
+    comments: [Comment]
+    upvotedBy: [ID]
+    downVotedBy: [ID]
+    createdAt: DateTime!
+    updatedAt: DateTime
+  }
+
+  type QuestionList {
+    id: ID!
+    title: String!
+    body: String!
+    author: Author
+    points: Int!
+    views: Int!
+    tags: [String!]!
+    answers: [Answer]
+    answerCount: Int!
+    createdAt: DateTime!
+    updatedAt: DateTime
+  }
+
   type Query {
     getUser(username: String!): User
+    getAllUsers: [UserList]
   }
 
   type LoggedUser {
