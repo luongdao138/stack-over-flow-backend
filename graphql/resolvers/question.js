@@ -48,5 +48,32 @@ module.exports = {
       await Question.deleteOne({ _id: quesId });
       return quesId;
     },
+    editQuestion: async (_, { quesId, title, body, tags }, context) => {
+      const user = await authChecker(context);
+      const { errors, isValid } = questionValidator(title, body, tags);
+      if (!isValid) throw new UserInputError('User input error', { errors });
+
+      const question = await Question.findById(quesId);
+      if (!question) throw new UserInputError('Question not found!');
+      if (question.author.toString() !== user._id.toString())
+        throw new UserInputError('Action not allowed!');
+
+      const updateQuestion = {
+        title,
+        body,
+        tags,
+        updatedAt: Date.now(),
+      };
+
+      const result = await Question.findByIdAndUpdate(quesId, updateQuestion, {
+        new: true,
+      })
+        .populate('author', 'username')
+        .populate('comments.author', 'username')
+        .populate('answers.author', 'username')
+        .populate('answer.comments.author', 'username');
+
+      return result;
+    },
   },
 };

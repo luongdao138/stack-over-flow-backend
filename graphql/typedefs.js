@@ -65,13 +65,14 @@ module.exports = gql`
     body: String!
     createdAt: DateTime!
     updatedAt: DateTime
+    author: Author!
   }
 
   type Question {
     id: ID!
     title: String!
     body: String!
-    author: Author
+    author: Author!
     points: Int!
     views: Int!
     tags: [String!]!
@@ -86,7 +87,7 @@ module.exports = gql`
 
   type Answer {
     id: ID!
-    author: Author
+    author: Author!
     body: String!
     points: Int!
     comments: [Comment]
@@ -129,5 +130,11 @@ module.exports = gql`
     login(username: String!, password: String!): LoggedUser
     postQuestion(title: String!, body: String!, tags: [String!]!): Question
     deleteQuestion(quesId: ID!): ID!
+    editQuestion(
+      quesId: ID!
+      title: String!
+      body: String!
+      tags: [String!]!
+    ): Question
   }
 `;
