@@ -3,8 +3,46 @@ const { registerValidator, loginValidator } = require('../../utils/validators');
 const bcrypt = require('bcryptjs');
 const jwt = require('jsonwebtoken');
 const { UserInputError } = require('apollo-server');
+const Question = require('../../models/Question');
+const Answer = require('../../models/Answer');
 
 module.exports = {
+  Query: {
+    getUser: async (_, { username }) => {
+      if (username.trim() === '')
+        throw new UserInputError('Username must be provided!');
+
+      // find the user
+      const user = await User.findOne({ username });
+      if (!user)
+        throw new UserInputError(`Username ${username} does not exist!`);
+
+      // find the rencent questions and recent answers
+      const recentQuestions = await Question.find(
+        { author: user._id },
+        'id title points createdAt'
+      )
+        .sort({ createdAt: -1 })
+        .limit(5);
+      const recentAnswers = await Question.find(
+        { answers: { $elemMatch: { author: user._id } } },
+        'id title points createdAt'
+      )
+        .sort({ createdAt: -1 })
+        .limit(5);
+
+      return {
+        id: user._id,
+        role: user.role,
+        username: user.username,
+        answers: user.answers,
+        questions: user.questions,
+        createdAt: user.createdAt,
+        recentAnswers,
+        recentQuestions,
+      };
+    },
+  },
   Mutation: {
     register: async (_, { username, password }) => {
       // check if the register input is valid

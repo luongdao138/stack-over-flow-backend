@@ -1,5 +1,6 @@
 const { Schema, model } = require('mongoose');
 const commentSchema = require('./Comment').schema;
+const answerSchema = require('./Answer').schema;
 
 const questionModel = new Schema({
   author: {
@@ -20,7 +21,7 @@ const questionModel = new Schema({
   },
   tags: [{ type: String, required: true, trim: true }],
   comments: [commentSchema],
-  answers: [{ type: Schema.Types.ObjectId, ref: 'Answer' }],
+  answers: [answerSchema],
   upvotedBy: [{ type: Schema.Types.ObjectId, ref: 'User' }],
   downVotedBy: [{ type: Schema.Types.ObjectId, ref: 'User' }],
   views: { type: Number, default: 0 },
