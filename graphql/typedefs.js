@@ -18,8 +18,39 @@ module.exports = gql`
     OLDEST
   }
 
+  type User {
+    id: ID!
+    username: String!
+    role: RoleType
+    answers: [AnswerRep]
+    questions: [QuestionRep]
+    createdAt: DateTime
+    reputation: Int
+    recentQuestions: [RecentActivity]
+    recentAnswers: [RecentActivity]
+    totalQuestions: Int
+    totalAnswers: Int
+  }
+
+  type QuestionRep {
+    quesId: ID!
+    rep: Int!
+  }
+
+  type AnswerRep {
+    ansId: ID!
+    rep: Int!
+  }
+
+  type RecentActivity {
+    id: ID!
+    title: String!
+    createdAt: DateTime!
+    points: Int!
+  }
+
   type Query {
-    helloWord: String!
+    getUser(username: String!): User
   }
 
   type LoggedUser {
