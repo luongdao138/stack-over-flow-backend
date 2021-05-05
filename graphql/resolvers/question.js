@@ -35,5 +35,18 @@ module.exports = {
         });
       }
     },
+    deleteQuestion: async (_, { quesId }, context) => {
+      const user = await authChecker(context);
+      const question = await Question.findById(quesId);
+      if (!question) throw new UserInputError('Question not found!');
+      if (
+        question.author.toString() !== user._id.toString() &&
+        user.role !== 'admin'
+      )
+        throw new UserInputError('Action not allowed!');
+
+      await Question.deleteOne({ _id: quesId });
+      return quesId;
+    },
   },
 };
